@@ -1,0 +1,234 @@
+{
+  "_comment": [
+    "Seed catalogue for the Phase 9 recipe recommender.",
+    "",
+    "`ingredients` are the ones that decide whether a recipe is cookable -- they",
+    "form the denominator of the match score. `pantry` items (salt, oil, spices)",
+    "are things a kitchen is assumed to have; they are stored alongside but kept",
+    "out of the score, otherwise every recipe would look 40% missing forever.",
+    "",
+    "All names are lowercase singular. The matcher normalises the user's inventory",
+    "the same way, so 'Tomatoes' in the fridge matches 'tomato' here.",
+    "",
+    "source = 'seed' in the database. An external recipe API can later upsert into",
+    "the same table under its own source without touching the matching code."
+  ],
+  "recipes": [
+    {
+      "externalId": "aloo-gobi",
+      "title": "Aloo Gobi",
+      "readyInMinutes": 30,
+      "servings": 3,
+      "ingredients": ["potato", "cauliflower", "onion", "tomato"],
+      "pantry": ["oil", "turmeric", "cumin", "coriander powder", "salt"],
+      "instructions": "Heat oil and crackle the cumin. Add onion and cook until golden, then the tomato, turmeric and coriander powder. Add the cubed potato and cauliflower florets, cover, and cook on low for 18-20 minutes until tender, stirring occasionally."
+    },
+    {
+      "externalId": "paneer-butter-masala",
+      "title": "Paneer Butter Masala",
+      "readyInMinutes": 35,
+      "servings": 4,
+      "ingredients": ["paneer", "tomato", "onion", "butter", "cream", "cashew"],
+      "pantry": ["ginger", "garlic", "garam masala", "chilli powder", "salt", "sugar"],
+      "instructions": "Simmer tomato, onion and cashew with a little water for 12 minutes, then blend smooth. Fry the paste in butter with ginger, garlic and the spices until it thickens. Stir in cream and the paneer cubes and warm through for 4 minutes."
+    },
+    {
+      "externalId": "vegetable-pulao",
+      "title": "Vegetable Pulao",
+      "readyInMinutes": 30,
+      "servings": 4,
+      "ingredients": ["rice", "carrot", "beans", "peas", "onion"],
+      "pantry": ["oil", "bay leaf", "cinnamon", "cloves", "salt"],
+      "instructions": "Rinse and soak the rice for 20 minutes. Fry the whole spices and onion in oil, add the chopped vegetables and saute for 3 minutes. Add the rice with twice its volume of water, bring to a boil, then cover and cook on low for 12 minutes."
+    },
+    {
+      "externalId": "tomato-rasam",
+      "title": "Tomato Rasam",
+      "readyInMinutes": 25,
+      "servings": 4,
+      "ingredients": ["tomato", "toor dal", "tamarind"],
+      "pantry": ["mustard seeds", "curry leaves", "asafoetida", "rasam powder", "salt", "oil"],
+      "instructions": "Pressure cook the toor dal until soft and mash it. Boil the chopped tomato with tamarind extract and rasam powder for 8 minutes, then add the dal and enough water to loosen. Finish with a tempering of mustard seeds, curry leaves and asafoetida."
+    },
+    {
+      "externalId": "palak-paneer",
+      "title": "Palak Paneer",
+      "readyInMinutes": 30,
+      "servings": 3,
+      "ingredients": ["spinach", "paneer", "onion", "tomato"],
+      "pantry": ["garlic", "green chilli", "cumin", "oil", "salt"],
+      "instructions": "Blanch the spinach for 2 minutes, cool it under cold water and blend to a puree. Fry cumin, garlic, onion and tomato until soft, add the puree and simmer 5 minutes. Fold in the paneer and cook for another 3 minutes."
+    },
+    {
+      "externalId": "masala-omelette",
+      "title": "Masala Omelette",
+      "readyInMinutes": 10,
+      "servings": 1,
+      "ingredients": ["egg", "onion", "tomato", "coriander leaves"],
+      "pantry": ["green chilli", "salt", "oil", "pepper"],
+      "instructions": "Beat the eggs with salt and pepper. Stir in finely chopped onion, tomato, coriander and green chilli. Pour into a hot oiled pan, cook until the base sets, then fold and give it another minute."
+    },
+    {
+      "externalId": "banana-milkshake",
+      "title": "Banana Milkshake",
+      "readyInMinutes": 5,
+      "servings": 2,
+      "ingredients": ["banana", "milk", "curd"],
+      "pantry": ["sugar", "cardamom"],
+      "instructions": "Blend the banana with cold milk, curd, sugar and a pinch of cardamom until frothy. Serve immediately -- it separates if it stands."
+    },
+    {
+      "externalId": "curd-rice",
+      "title": "Curd Rice",
+      "readyInMinutes": 15,
+      "servings": 2,
+      "ingredients": ["rice", "curd", "milk", "carrot"],
+      "pantry": ["mustard seeds", "curry leaves", "ginger", "green chilli", "salt", "oil"],
+      "instructions": "Mash the cooked rice while warm and let it cool. Mix in curd and a splash of milk to loosen, then the grated carrot and salt. Temper mustard seeds, curry leaves, ginger and chilli in oil and pour over."
+    },
+    {
+      "externalId": "mixed-vegetable-sabzi",
+      "title": "Mixed Vegetable Sabzi",
+      "readyInMinutes": 25,
+      "servings": 4,
+      "ingredients": ["potato", "carrot", "beans", "peas", "capsicum", "onion"],
+      "pantry": ["oil", "cumin", "turmeric", "garam masala", "salt"],
+      "instructions": "A clear-out-the-fridge dish: whatever vegetables you have, diced to a similar size. Crackle cumin in oil, add onion, then the harder vegetables first and the softer ones after 5 minutes. Season, cover and cook 12 minutes."
+    },
+    {
+      "externalId": "tomato-onion-chutney",
+      "title": "Tomato Onion Chutney",
+      "readyInMinutes": 20,
+      "servings": 6,
+      "ingredients": ["tomato", "onion", "garlic"],
+      "pantry": ["red chilli", "urad dal", "salt", "oil", "mustard seeds"],
+      "instructions": "Fry urad dal and red chilli in oil until the dal turns golden. Add onion, garlic and tomato and cook until completely soft, about 10 minutes. Cool, grind coarsely with salt, and temper with mustard seeds."
+    },
+    {
+      "externalId": "spinach-dal",
+      "title": "Spinach Dal",
+      "readyInMinutes": 30,
+      "servings": 4,
+      "ingredients": ["toor dal", "spinach", "tomato", "onion"],
+      "pantry": ["turmeric", "cumin", "garlic", "salt", "ghee"],
+      "instructions": "Pressure cook the dal with turmeric until soft. Saute garlic, onion and tomato in ghee, add the chopped spinach and wilt it down. Stir in the dal with water to the consistency you like and simmer 5 minutes."
+    },
+    {
+      "externalId": "fruit-custard",
+      "title": "Fruit Custard",
+      "readyInMinutes": 20,
+      "servings": 4,
+      "ingredients": ["milk", "banana", "apple", "grapes", "custard powder"],
+      "pantry": ["sugar"],
+      "instructions": "Whisk custard powder into a little cold milk. Bring the rest of the milk with sugar to a simmer, pour in the slurry and cook 3 minutes until thick. Chill completely, then fold in the chopped fruit just before serving."
+    },
+    {
+      "externalId": "poha",
+      "title": "Kanda Poha",
+      "readyInMinutes": 20,
+      "servings": 2,
+      "ingredients": ["poha", "onion", "potato", "peanut", "lemon"],
+      "pantry": ["mustard seeds", "curry leaves", "turmeric", "green chilli", "salt", "oil"],
+      "instructions": "Rinse the poha in a colander until just damp and leave it to soften for 10 minutes. Temper mustard seeds, curry leaves and chilli, fry the peanut, then the onion and diced potato until cooked. Fold in the poha with turmeric and salt, cover for 3 minutes and finish with lemon juice."
+    },
+    {
+      "externalId": "vegetable-upma",
+      "title": "Vegetable Upma",
+      "readyInMinutes": 20,
+      "servings": 3,
+      "ingredients": ["semolina", "onion", "carrot", "peas"],
+      "pantry": ["mustard seeds", "urad dal", "curry leaves", "green chilli", "salt", "oil"],
+      "instructions": "Dry roast the semolina until it smells nutty and set it aside. Temper mustard seeds, urad dal, curry leaves and chilli, add onion, carrot and peas and cook 5 minutes. Pour in three times the semolina's volume of hot water, salt it, then rain in the semolina while stirring and cook covered for 4 minutes."
+    },
+    {
+      "externalId": "chicken-curry",
+      "title": "Home Style Chicken Curry",
+      "readyInMinutes": 45,
+      "servings": 4,
+      "ingredients": ["chicken", "onion", "tomato", "curd", "coriander leaves"],
+      "pantry": ["ginger", "garlic", "chilli powder", "garam masala", "turmeric", "oil", "salt"],
+      "instructions": "Marinate the chicken in curd, turmeric and chilli powder for 20 minutes. Brown the onion deeply in oil, add ginger, garlic and tomato and cook to a paste. Add the chicken, seal it on high heat, then cover and simmer 25 minutes. Finish with garam masala and coriander."
+    },
+    {
+      "externalId": "egg-fried-rice",
+      "title": "Egg Fried Rice",
+      "readyInMinutes": 15,
+      "servings": 2,
+      "ingredients": ["rice", "egg", "carrot", "beans", "spring onion"],
+      "pantry": ["soy sauce", "pepper", "oil", "salt"],
+      "instructions": "Best made with day-old cold rice. Scramble the eggs in hot oil and set aside. Stir fry the diced carrot, beans and spring onion whites for 3 minutes on high, add the rice and toss hard, then the egg, soy sauce and pepper. Scatter the greens over at the end."
+    },
+    {
+      "externalId": "cucumber-raita",
+      "title": "Cucumber Raita",
+      "readyInMinutes": 10,
+      "servings": 4,
+      "ingredients": ["curd", "cucumber", "coriander leaves"],
+      "pantry": ["roasted cumin powder", "salt", "black salt"],
+      "instructions": "Whisk the curd smooth with a splash of water. Grate the cucumber, squeeze out the excess water, and fold it in with chopped coriander, roasted cumin and salt. Chill before serving."
+    },
+    {
+      "externalId": "besan-chilla",
+      "title": "Besan Chilla",
+      "readyInMinutes": 20,
+      "servings": 2,
+      "ingredients": ["besan", "onion", "tomato", "capsicum", "coriander leaves"],
+      "pantry": ["turmeric", "green chilli", "carom seeds", "salt", "oil"],
+      "instructions": "Whisk besan with water to a pouring batter and rest it 10 minutes. Stir in the finely chopped vegetables, coriander, chilli and spices. Ladle onto a hot oiled tawa, spread thin, and cook 3 minutes a side until the edges lift."
+    },
+    {
+      "externalId": "banana-bread",
+      "title": "Banana Bread",
+      "readyInMinutes": 60,
+      "servings": 8,
+      "ingredients": ["banana", "flour", "butter", "egg", "milk"],
+      "pantry": ["sugar", "baking powder", "baking soda", "salt", "vanilla"],
+      "instructions": "The classic use for bananas that have gone too soft to eat. Mash 3 of them and beat with melted butter, sugar and egg. Fold in flour, baking powder, soda and salt, loosen with milk, and bake at 175C for 45-50 minutes until a skewer comes out clean."
+    },
+    {
+      "externalId": "grilled-cheese-sandwich",
+      "title": "Grilled Cheese Sandwich",
+      "readyInMinutes": 10,
+      "servings": 1,
+      "ingredients": ["bread", "cheese", "butter", "tomato"],
+      "pantry": ["pepper", "salt"],
+      "instructions": "Butter the outside of both slices. Layer cheese and thin tomato slices inside, season, and press in a hot pan or toaster for 4 minutes until the cheese runs and the crust is dark gold."
+    },
+    {
+      "externalId": "aloo-paratha",
+      "title": "Aloo Paratha",
+      "readyInMinutes": 40,
+      "servings": 4,
+      "ingredients": ["flour", "potato", "onion", "coriander leaves"],
+      "pantry": ["green chilli", "garam masala", "ajwain", "salt", "ghee"],
+      "instructions": "Knead a soft dough with flour, salt and water and rest it 20 minutes. Mash the boiled potato with onion, coriander, chilli and garam masala -- no lumps, or the paratha tears. Stuff, roll gently, and cook on a tawa with ghee until both sides are spotted brown."
+    },
+    {
+      "externalId": "tomato-soup",
+      "title": "Tomato Soup",
+      "readyInMinutes": 30,
+      "servings": 3,
+      "ingredients": ["tomato", "onion", "carrot", "butter"],
+      "pantry": ["garlic", "pepper", "sugar", "salt"],
+      "instructions": "Soften onion, garlic and carrot in butter, add the roughly chopped tomato and cook 15 minutes until collapsing. Blend, pass through a sieve if you want it silky, then season with salt, pepper and a pinch of sugar to round the acidity."
+    },
+    {
+      "externalId": "chana-masala",
+      "title": "Chana Masala",
+      "readyInMinutes": 35,
+      "servings": 4,
+      "ingredients": ["chickpea", "onion", "tomato", "coriander leaves"],
+      "pantry": ["ginger", "garlic", "chana masala powder", "cumin", "oil", "salt"],
+      "instructions": "Use soaked and boiled chickpeas, or drained tinned ones. Fry cumin, onion, ginger and garlic until browned, add tomato and cook down to a thick masala. Add the chickpeas with a cup of their cooking water and simmer 12 minutes so they take the flavour."
+    },
+    {
+      "externalId": "carrot-halwa",
+      "title": "Carrot Halwa",
+      "readyInMinutes": 45,
+      "servings": 4,
+      "ingredients": ["carrot", "milk", "ghee", "cashew"],
+      "pantry": ["sugar", "cardamom"],
+      "instructions": "Grate the carrot fine and fry it in ghee for 8 minutes. Add milk and cook on medium, stirring often, until almost dry -- about 25 minutes. Stir in sugar and cardamom, cook 5 more minutes, and top with cashews fried in ghee."
+    }
+  ]
+}

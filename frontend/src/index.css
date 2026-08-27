@@ -1,0 +1,2364 @@
+/* ==========================================================================
+   Smart Kitchen -- design system
+   ==========================================================================
+
+   Mobile-first. The block diagram calls for "Mobile App (User Access)", so the
+   phone layout is the base and the desktop layout is the override.
+
+   Two shells, one breakpoint (1024px):
+     below -- sticky top bar + fixed bottom tab bar, the way a phone app works
+     above -- a dark sidebar, because a top bar wastes vertical space on a laptop
+
+   Colour carries meaning here, so it is not decorative: emerald = fresh/brand,
+   amber = near expiry, rose = expired. Those three are the only accent families
+   in the file, which is what keeps the app from looking like a template.
+   ========================================================================== */
+
+:root {
+  /* ------------------------------------------------------------- typography */
+  /* Two faces: Jakarta for headings and figures (its numerals are wide and
+     confident, which suits a dashboard), Inter for everything that is read
+     rather than glanced at. Both are loaded in index.html. */
+  --font-display: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+  --font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* ------------------------------------------------------------------ brand */
+  --brand-50: #ecfdf5;
+  --brand-100: #d1fae5;
+  --brand-200: #a7f3d0;
+  --brand-400: #34d399;
+  --brand-500: #10b981;
+  --brand-600: #059669;
+  --brand-700: #047857;
+  --brand-800: #065f46;
+  --brand-900: #064e3b;
+
+  /* The sidebar gradient. Matches <meta name="theme-color"> so the phone's
+     status bar does not sit on a different green to the app. */
+  --shell-dark-1: #04372c;
+  --shell-dark-2: #032a22;
+
+  /* --------------------------------------------------- status: near expiry */
+  --near-50: #fffbeb;
+  --near-100: #fef3c7;
+  --near-200: #fde68a;
+  --near-500: #f59e0b;
+  --near-700: #b45309;
+  --near-800: #92400e;
+
+  /* ------------------------------------------------------ status: expired */
+  --bad-50: #fff1f2;
+  --bad-100: #ffe4e6;
+  --bad-200: #fecdd3;
+  --bad-500: #f43f5e;
+  --bad-600: #e11d48;
+  --bad-700: #be123c;
+
+  /* ---------------------------------------------------------------- neutral */
+  /* Greened-off greys rather than pure grey, so the neutrals belong to the same
+     family as the brand instead of looking bolted on. */
+  --ink: #0f1c18;
+  --ink-2: #3d4a45;
+  --muted: #6b7a74;
+  --line: #e3e9e6;
+  --line-soft: #eef2f0;
+  --bg: #f4f7f5;
+  --card: #ffffff;
+
+  /* ----------------------------------------------------------------- radius */
+  --r-xs: 8px;
+  --r-sm: 12px;
+  --r-md: 16px;
+  --r-lg: 20px;
+  --r-xl: 24px;
+  --r-full: 999px;
+
+  /* ---------------------------------------------------------------- shadows */
+  /* Two layers each: a tight one for the contact edge, a wide soft one for the
+     lift. One-layer shadows are what make a card look pasted on. */
+  --sh-xs: 0 1px 2px rgb(15 28 24 / 0.05);
+  --sh-sm: 0 1px 3px rgb(15 28 24 / 0.06), 0 1px 2px rgb(15 28 24 / 0.04);
+  --sh-md: 0 4px 12px -2px rgb(15 28 24 / 0.08), 0 2px 6px -2px rgb(15 28 24 / 0.05);
+  --sh-lg: 0 18px 40px -12px rgb(15 28 24 / 0.18), 0 4px 12px -4px rgb(15 28 24 / 0.08);
+  --sh-brand: 0 6px 18px -6px rgb(5 150 105 / 0.45);
+
+  /* ----------------------------------------------------------------- layout */
+  --sidebar-w: 264px;
+  --topbar-h: 58px;
+  --tabbar-h: 62px;
+  --content-max: 1200px;
+
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* =============================================================== base ==== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* Tells the browser to render form controls and scrollbars for a light UI. */
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 15.5px;
+  line-height: 1.55;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.2;
+  /* Display faces set tighter than body text at the same size. */
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+h1 {
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+h2 {
+  font-size: 1.12rem;
+}
+
+h3 {
+  font-size: 1rem;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--brand-700);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+a:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Panel demos happen on a projector, so keyboard focus has to be unmissable. */
+:focus-visible {
+  outline: 2px solid var(--brand-600);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: var(--brand-200);
+  color: var(--brand-900);
+}
+
+/* A page-wide scrollbar in the browser chrome colour looks unfinished next to
+   a designed sidebar, so it gets the neutral palette too. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5d1;
+  border: 2px solid var(--bg);
+  border-radius: var(--r-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #adbdb7;
+}
+
+/* Icons inherit their colour from the element they sit in -- that is what lets
+   one glyph work inside a button, a badge and a nav link without variants. */
+.icon {
+  flex: 0 0 auto;
+}
+
+/* ========================================================= utilities ==== */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.spread {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================================ shell ===== */
+
+.shell {
+  min-height: 100dvh;
+}
+
+/* ------------------------------------------------------ sidebar (desktop) */
+/* Hidden on phones; the tab bar takes over below 1024px. */
+
+.sidebar {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 14px;
+  background: linear-gradient(168deg, var(--shell-dark-1) 0%, #053026 52%, var(--shell-dark-2) 100%);
+  color: #cfe3dc;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 6px 8px 18px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+}
+
+.sidebar-brand:hover {
+  text-decoration: none;
+}
+
+.sidebar-brand img {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border-radius: var(--r-xs);
+  /* The favicon is a green mark on transparent; on the dark green sidebar it
+     needs its own light plate to stay legible. */
+  background: rgb(255 255 255 / 0.1);
+  padding: 4px;
+}
+
+.sidebar-brand span {
+  display: block;
+  line-height: 1.15;
+}
+
+.sidebar-brand small {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #85a89d;
+}
+
+.side-label {
+  padding: 0 10px 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #6f938a;
+}
+
+.side-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.side-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #a6c4bb;
+  transition: background-color 0.16s var(--ease), color 0.16s var(--ease);
+}
+
+.side-link:hover {
+  background: rgb(255 255 255 / 0.07);
+  color: #fff;
+  text-decoration: none;
+}
+
+.side-link.active {
+  background: rgb(255 255 255 / 0.13);
+  color: #fff;
+}
+
+/* Pushes the user block to the bottom of the column. */
+.sidebar-foot {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid rgb(255 255 255 / 0.09);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.side-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.side-user-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.side-user-mail {
+  font-size: 0.74rem;
+  color: #85a89d;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* -------------------------------------------------------- top bar (phone) */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  height: var(--topbar-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 14px;
+  /* Translucent + blur so content scrolling underneath reads as "behind glass"
+     rather than disappearing under an opaque slab. */
+  background: rgb(255 255 255 / 0.82);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.topbar-brand:hover {
+  text-decoration: none;
+}
+
+.topbar-brand img {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+}
+
+/* ------------------------------------------------------ tab bar (phone) */
+
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  height: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+  /* Keeps the row of labels clear of the iPhone home indicator. */
+  padding-bottom: env(safe-area-inset-bottom);
+  background: rgb(255 255 255 / 0.92);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid var(--line);
+}
+
+.tab-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--muted);
+  transition: color 0.16s var(--ease);
+}
+
+.tab-link:hover {
+  text-decoration: none;
+}
+
+.tab-link.active {
+  color: var(--brand-700);
+}
+
+/* The pill behind the glyph is the active indicator; it animates in, so the
+   change of tab reads as movement and not just a colour swap. */
+.tab-ico {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 26px;
+  border-radius: var(--r-full);
+  transition: background-color 0.18s var(--ease);
+}
+
+.tab-link.active .tab-ico {
+  background: var(--brand-50);
+}
+
+/* ------------------------------------------------------------- content */
+
+.content {
+  min-width: 0;
+}
+
+.content-inner {
+  width: 100%;
+  max-width: var(--content-max);
+  margin: 0 auto;
+  /* Bottom padding clears the fixed tab bar, so the last card is never trapped
+     underneath it. */
+  padding: 18px 16px calc(var(--tabbar-h) + 26px);
+}
+
+.foot-note {
+  margin-top: 28px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 0.76rem;
+  line-height: 1.6;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* --------------------------------------------------------------- avatar */
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  border-radius: var(--r-full);
+  background: linear-gradient(145deg, var(--brand-500), var(--brand-700));
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.01em;
+}
+
+.avatar-sm {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  font-size: 0.74rem;
+}
+
+/* ========================================================= page head === */
+
+.page-head h1 + p {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 0.94rem;
+}
+
+/* =========================================================== responsive =
+   Everything above is the phone. Below is what changes on a laptop.
+   ======================================================================== */
+
+@media (min-width: 1024px) {
+  .shell {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  }
+
+  /* Sticky at full viewport height: the nav stays put while content scrolls,
+     and the sidebar itself scrolls if the window is very short. */
+  .sidebar {
+    display: flex;
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    overflow-y: auto;
+  }
+
+  .topbar,
+  .tabbar {
+    display: none;
+  }
+
+  .content-inner {
+    padding: 30px 30px 56px;
+  }
+
+  h1 {
+    font-size: 1.85rem;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+}
+
+/* ====================================================== reduced motion == */
+/* Honour the OS setting: keep the interface usable, drop the movement. */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================== card ==== */
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 18px;
+  box-shadow: var(--sh-sm);
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.card-head h2 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+/* Padding is on the card, so a full-bleed divider has to be pulled back out. */
+.card-split {
+  margin: 16px -18px;
+  border: 0;
+  border-top: 1px solid var(--line-soft);
+}
+
+/* ------------------------------------------------------------------- hero */
+/* The dashboard greeting. A dark panel at the top of the page gives the app a
+   focal point and stops the screen reading as an undifferentiated card grid. */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  padding: 22px;
+  background: linear-gradient(150deg, var(--shell-dark-1) 0%, #064c3b 55%, var(--brand-700) 100%);
+  color: #eaf6f1;
+  box-shadow: var(--sh-md);
+}
+
+/* One soft highlight, drawn with a radial gradient rather than an image, so it
+   costs nothing to load and scales to any card size. */
+.hero::after {
+  content: '';
+  position: absolute;
+  top: -70px;
+  right: -60px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(52 211 153 / 0.32), transparent 68%);
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brand-200);
+}
+
+.hero h1 {
+  margin-top: 9px;
+  color: #fff;
+  font-size: 1.6rem;
+}
+
+.hero p {
+  position: relative;
+  margin-top: 7px;
+  max-width: 52ch;
+  font-size: 0.95rem;
+  color: #b6d6cb;
+}
+
+.hero-actions {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+/* =========================================================== buttons === */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  min-height: 42px;
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  font: inherit;
+  font-size: 0.91rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.16s var(--ease), border-color 0.16s var(--ease),
+    color 0.16s var(--ease), box-shadow 0.16s var(--ease), transform 0.12s var(--ease);
+}
+
+/* A press needs physical feedback; 1px is enough to feel it without wobble. */
+.btn:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--brand-600);
+  color: #fff;
+  box-shadow: var(--sh-brand);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: var(--brand-700);
+}
+
+.btn-secondary {
+  background: var(--card);
+  border-color: var(--line);
+  color: var(--ink-2);
+  box-shadow: var(--sh-xs);
+}
+
+.btn-secondary:not(:disabled):hover {
+  border-color: #c9d5d0;
+  color: var(--ink);
+  background: #fbfdfc;
+}
+
+.btn-danger {
+  background: var(--card);
+  border-color: var(--bad-200);
+  color: var(--bad-700);
+}
+
+.btn-danger:not(:disabled):hover {
+  background: var(--bad-600);
+  border-color: var(--bad-600);
+  color: #fff;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--muted);
+  padding: 8px 11px;
+}
+
+.btn-ghost:not(:disabled):hover {
+  background: var(--line-soft);
+  color: var(--ink);
+}
+
+/* The logout button lives on the dark sidebar, where the light-surface ghost
+   and secondary styles both vanish. */
+.btn-on-dark {
+  background: rgb(255 255 255 / 0.1);
+  border-color: rgb(255 255 255 / 0.14);
+  color: #dcefe8;
+}
+
+.btn-on-dark:not(:disabled):hover {
+  background: rgb(255 255 255 / 0.18);
+  color: #fff;
+}
+
+.btn-sm {
+  padding: 6px 11px;
+  min-height: 34px;
+  font-size: 0.83rem;
+  gap: 6px;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* Square, for an icon with no label. Always needs `title` on the Icon. */
+.btn-icon {
+  padding: 0;
+  width: 38px;
+  min-height: 38px;
+  flex: 0 0 38px;
+}
+
+/* ============================================================ badges === */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: var(--r-full);
+  border: 1px solid transparent;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.badge-fresh {
+  background: var(--brand-50);
+  border-color: var(--brand-100);
+  color: var(--brand-700);
+}
+
+.badge-near {
+  background: var(--near-50);
+  border-color: var(--near-200);
+  color: var(--near-700);
+}
+
+.badge-expired {
+  background: var(--bad-50);
+  border-color: var(--bad-200);
+  color: var(--bad-700);
+}
+
+.badge-consumed {
+  background: var(--line-soft);
+  border-color: var(--line);
+  color: var(--muted);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* A quieter badge for secondary facts (attempt counts, channel names). */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: var(--r-full);
+  background: var(--line-soft);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ======================================================== stat tiles === */
+
+.stat-grid {
+  display: grid;
+  gap: 11px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.stat {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 14px;
+  box-shadow: var(--sh-sm);
+  transition: box-shadow 0.18s var(--ease), transform 0.18s var(--ease);
+}
+
+.stat:hover {
+  box-shadow: var(--sh-md);
+  transform: translateY(-1px);
+}
+
+.stat-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.stat-value {
+  margin-top: 7px;
+  font-family: var(--font-display);
+  font-size: 1.95rem;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  /* Equal-width digits, so a count changing from 9 to 10 does not shift the
+     tile's layout. */
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-note {
+  margin-top: 2px;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.stat.is-near .stat-value {
+  color: var(--near-700);
+}
+
+.stat.is-expired .stat-value {
+  color: var(--bad-700);
+}
+
+.stat.is-fresh .stat-value {
+  color: var(--brand-700);
+}
+
+/* The tile that needs action is tinted, not striped -- an edge stripe reads as
+   decoration, a tint reads as state. */
+.stat.is-alert {
+  background: var(--near-50);
+  border-color: var(--near-200);
+}
+
+.stat.is-alert .stat-label {
+  color: var(--near-800);
+}
+
+/* ============================================================= donut === */
+/* Hand-rolled SVG. A chart library for one ring would be more bytes than the
+   whole rest of the app. */
+
+.donut-wrap {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.donut {
+  position: relative;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+}
+
+/* -90deg puts the first segment at 12 o'clock, which is where a reader expects
+   a ring to start. */
+.donut svg {
+  transform: rotate(-90deg);
+}
+
+.donut-seg {
+  transition: stroke-dasharray 0.6s var(--ease);
+}
+
+.donut-hole {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  line-height: 1.1;
+}
+
+.donut-total {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+}
+
+.donut-total-label {
+  margin-top: 2px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  flex: 1 1 190px;
+  min-width: 0;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 0.88rem;
+}
+
+.legend-swatch {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 10px;
+  border-radius: 3px;
+}
+
+.legend-label {
+  color: var(--ink-2);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.legend-value {
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.legend-pct {
+  flex: 0 0 44px;
+  text-align: right;
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ========================================================= item cards == */
+
+.item-grid {
+  display: grid;
+  gap: 11px;
+  grid-template-columns: 1fr;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 14px;
+  box-shadow: var(--sh-sm);
+  transition: box-shadow 0.18s var(--ease), transform 0.18s var(--ease);
+}
+
+.item:hover {
+  box-shadow: var(--sh-md);
+  transform: translateY(-1px);
+}
+
+/* Status shows on the border and a faint tint. Both together are enough to scan
+   a grid at a glance without a stripe or a coloured header bar. */
+.item.is-expired {
+  border-color: var(--bad-200);
+  background: linear-gradient(180deg, var(--bad-50), var(--card) 42%);
+}
+
+.item.is-near {
+  border-color: var(--near-200);
+  background: linear-gradient(180deg, var(--near-50), var(--card) 42%);
+}
+
+.item.is-consumed {
+  opacity: 0.68;
+  box-shadow: none;
+}
+
+.item-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.item-name {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  overflow-wrap: anywhere;
+}
+
+.item-name.struck {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--muted);
+}
+
+.item-category {
+  margin-top: 1px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-size: 0.85rem;
+  color: var(--ink-2);
+}
+
+.item-meta b {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.item-expiry {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.item-expiry.is-expired {
+  color: var(--bad-700);
+}
+
+.item-expiry.is-near {
+  color: var(--near-700);
+}
+
+.item-expiry.is-fresh {
+  color: var(--muted);
+}
+
+.item-notes {
+  font-size: 0.83rem;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.item-actions {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--line-soft);
+}
+
+/* ========================================================== alert log == */
+/* `.alert-*` is the domain object -- an expiry alert. UI banners are `.notice`,
+   so the two never collide. */
+
+.alert-log {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.alert-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--card);
+}
+
+.alert-row.is-expired {
+  border-color: var(--bad-200);
+  background: var(--bad-50);
+}
+
+.alert-row.is-near {
+  border-color: var(--near-200);
+  background: var(--near-50);
+}
+
+.alert-row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.alert-message {
+  font-weight: 600;
+  font-size: 0.92rem;
+  overflow-wrap: anywhere;
+}
+
+.alert-row-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.alert-reason {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 0.81rem;
+  color: var(--bad-700);
+  overflow-wrap: anywhere;
+}
+
+/* Right-aligned and non-shrinking, so a long message never squeezes the clock
+   into two lines on a phone. */
+.alert-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+  flex: 0 0 auto;
+}
+
+.alert-time {
+  font-size: 0.78rem;
+  color: var(--muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Day heading count, e.g. "Today 4". */
+.count-chip {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: var(--r-full);
+  background: var(--line-soft);
+  font-family: var(--font-ui);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* =========================================================== notices === */
+/* Inline page-level messages. Named `.notice` deliberately: "alert" is already
+   taken by the domain object above. */
+
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid;
+  border-radius: var(--r-sm);
+  font-size: 0.89rem;
+  font-weight: 500;
+}
+
+.notice a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.notice-brand {
+  background: var(--brand-50);
+  border-color: var(--brand-100);
+  color: var(--brand-800);
+}
+
+.notice-brand a {
+  color: var(--brand-800);
+}
+
+.notice-info {
+  background: #f0f6fc;
+  border-color: #d5e5f2;
+  color: #1e4b73;
+}
+
+.notice-info a {
+  color: #1e4b73;
+}
+
+.notice-warn {
+  background: var(--near-50);
+  border-color: var(--near-200);
+  color: var(--near-800);
+}
+
+.notice-warn a {
+  color: var(--near-800);
+}
+
+.notice-error {
+  background: var(--bad-50);
+  border-color: var(--bad-200);
+  color: var(--bad-700);
+}
+
+.notice-error a {
+  color: var(--bad-700);
+}
+
+/* Nudges the leading icon onto the same optical line as the first row of text,
+   and stops flex from squashing it when the message wraps. Matched on the element
+   rather than a class so a call site cannot forget it. */
+.notice > svg {
+  flex: none;
+  margin-top: 2px;
+}
+
+/* ==================================================== pills / filters == */
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.pill-row {
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+  /* Snappier than free scrolling when thumbing through five filters. */
+  scroll-snap-type: x proximity;
+}
+
+.pill-row::-webkit-scrollbar {
+  display: none;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-full);
+  background: var(--card);
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  white-space: nowrap;
+  cursor: pointer;
+  scroll-snap-align: start;
+  transition: background-color 0.16s var(--ease), border-color 0.16s var(--ease),
+    color 0.16s var(--ease);
+}
+
+.pill:hover {
+  border-color: #c9d5d0;
+  background: #fbfdfc;
+}
+
+.pill.active {
+  background: var(--brand-600);
+  border-color: var(--brand-600);
+  color: #fff;
+}
+
+.pill.active:hover {
+  background: var(--brand-700);
+}
+
+.pill-count {
+  font-weight: 700;
+  opacity: 0.72;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================= fields == */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.label .opt {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  padding: 10px 12px;
+  min-height: 42px;
+  font: inherit;
+  /* 16px exactly: anything smaller makes iOS Safari zoom in on focus. */
+  font-size: 16px;
+  color: var(--ink);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  transition: border-color 0.16s var(--ease), box-shadow 0.16s var(--ease);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: #9aaaa4;
+}
+
+.input:hover,
+.select:hover,
+.textarea:hover {
+  border-color: #c9d5d0;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 3.5px var(--brand-100);
+}
+
+.textarea {
+  min-height: 78px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.input:disabled,
+.select:disabled,
+.textarea:disabled {
+  background: var(--line-soft);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.input.invalid,
+.select.invalid,
+.textarea.invalid {
+  border-color: var(--bad-500);
+}
+
+.input.invalid:focus,
+.select.invalid:focus,
+.textarea.invalid:focus {
+  box-shadow: 0 0 0 3.5px var(--bad-100);
+}
+
+.field-error {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--bad-700);
+}
+
+.field-hint {
+  font-size: 0.79rem;
+  color: var(--muted);
+}
+
+/* The magnifier sits inside the box, so the text has to start after it. */
+.search-field {
+  position: relative;
+}
+
+.search-field .icon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.search-field .input {
+  padding-left: 38px;
+}
+
+.form-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.checkbox-row input {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 19px;
+  margin: 2px 0 0;
+  accent-color: var(--brand-600);
+  cursor: pointer;
+}
+
+.checkbox-row span {
+  font-size: 0.9rem;
+}
+
+/* A checkbox that is a settings row of its own, not part of a filter bar. */
+.checkbox-card {
+  padding: 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: #fbfdfc;
+  transition: border-color 0.16s var(--ease), background-color 0.16s var(--ease);
+}
+
+.checkbox-card:hover {
+  border-color: var(--brand-200);
+  background: var(--brand-50);
+}
+
+/* ============================================================== modal === */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgb(9 20 17 / 0.5);
+  backdrop-filter: blur(3px);
+  animation: fade-in 0.18s var(--ease);
+}
+
+/* Bottom sheet on a phone (thumb reach), centred dialog on a laptop. */
+.modal {
+  width: 100%;
+  max-width: 560px;
+  max-height: 92dvh;
+  overflow-y: auto;
+  padding: 18px;
+  padding-bottom: calc(18px + env(safe-area-inset-bottom));
+  background: var(--card);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  box-shadow: var(--sh-lg);
+  animation: sheet-up 0.26s var(--ease);
+}
+
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+}
+
+/* ============================================================== toast === */
+
+.toast-wrap {
+  position: fixed;
+  left: 50%;
+  /* Above the tab bar on a phone, so a confirmation never covers the nav. */
+  bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 14px);
+  transform: translateX(-50%);
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: calc(100% - 28px);
+  max-width: 420px;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 15px;
+  border-radius: var(--r-sm);
+  box-shadow: var(--sh-lg);
+  font-size: 0.89rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--ink);
+  animation: sheet-up 0.22s var(--ease);
+}
+
+.toast.is-success {
+  background: var(--brand-700);
+}
+
+.toast.is-error {
+  background: var(--bad-600);
+}
+
+/* ================================================ empty / loading ====== */
+
+.empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--muted);
+}
+
+/* A tinted circle behind the glyph gives the empty state a focal point, so the
+   panel does not read as a bug. */
+.empty-icon {
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 14px;
+  border-radius: var(--r-full);
+  background: var(--brand-50);
+  color: var(--brand-600);
+}
+
+.empty h3 {
+  margin-bottom: 5px;
+  color: var(--ink);
+  font-size: 1.05rem;
+}
+
+.empty p {
+  max-width: 46ch;
+  margin: 0 auto;
+  font-size: 0.9rem;
+}
+
+.empty-action {
+  margin-top: 16px;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.2px solid currentColor;
+  /* The transparent quarter is what makes the rotation visible. */
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+  opacity: 0.9;
+}
+
+.spinner-lg {
+  width: 32px;
+  height: 32px;
+  border-width: 3px;
+  color: var(--brand-600);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.center-screen {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 14px;
+  padding: 24px;
+  color: var(--muted);
+}
+
+/* ----------------------------------------------------------- skeletons */
+/* Used instead of a spinner wherever the shape of the result is already known.
+   A block that matches the incoming layout reads as "loading"; a spinner in the
+   middle of an empty page reads as "stuck". */
+
+.skeleton {
+  background: linear-gradient(90deg, var(--line-soft) 25%, #f8fbfa 37%, var(--line-soft) 63%);
+  background-size: 400% 100%;
+  border-radius: var(--r-xs);
+  animation: shimmer 1.4s ease infinite;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 100% 50%;
+  }
+  to {
+    background-position: 0 50%;
+  }
+}
+
+.sk-line {
+  height: 12px;
+}
+
+.sk-line.w-40 {
+  width: 40%;
+}
+
+.sk-line.w-60 {
+  width: 60%;
+}
+
+.sk-line.w-80 {
+  width: 80%;
+}
+
+.sk-title {
+  height: 20px;
+  width: 45%;
+  border-radius: var(--r-xs);
+}
+
+.sk-stat {
+  height: 98px;
+  border-radius: var(--r-md);
+}
+
+.sk-card {
+  height: 156px;
+  border-radius: var(--r-md);
+}
+
+.sk-row {
+  height: 74px;
+  border-radius: var(--r-sm);
+}
+
+/* ========================================================= auth pages == */
+
+.auth-shell {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 28px 16px;
+  /* Two very soft brand glows on the page background -- enough to stop the login
+     screen being a white rectangle, subtle enough not to fight the form. */
+  background:
+    radial-gradient(circle at 12% 8%, rgb(16 185 129 / 0.1), transparent 42%),
+    radial-gradient(circle at 88% 92%, rgb(4 55 44 / 0.09), transparent 46%),
+    var(--bg);
+}
+
+.auth-box {
+  width: 100%;
+  max-width: 424px;
+  margin: 0 auto;
+}
+
+.auth-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+}
+
+.auth-logo img {
+  width: 38px;
+  height: 38px;
+}
+
+.auth-title {
+  text-align: center;
+  margin: 18px 0 20px;
+}
+
+.auth-title p {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.auth-box .card {
+  padding: 20px;
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-md);
+}
+
+.auth-switch {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* A one-line credential hint for the review demo. */
+.auth-demo {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border: 1px dashed var(--line);
+  border-radius: var(--r-sm);
+  background: var(--card);
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.auth-demo b {
+  color: var(--ink-2);
+  font-weight: 600;
+}
+
+/* ====================================================== recipes (P9) ==== */
+/* The recommendation page. Everything here exists to answer one question the
+   user has about every card -- "why is this at the top?" -- because a ranked
+   list whose order looks arbitrary is a list nobody trusts. */
+
+/* -------------------------------------------------- status text utilities */
+/* Used inline inside a sentence, where a badge would be too loud. */
+
+.text-near {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--near-700);
+  font-weight: 600;
+}
+
+.text-expired {
+  color: var(--bad-700);
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------ summary bar */
+
+.recipe-summary-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--ink-2);
+}
+
+.recipe-summary-bar b {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A drawn dot rather than a "·" character: a middot sits on the text baseline
+   and reads as punctuation, this centres between the two items it separates. */
+.summary-sep {
+  width: 4px;
+  height: 4px;
+  border-radius: var(--r-full);
+  background: var(--line);
+}
+
+/* -------------------------------------------------------------- score bar */
+/* The visual form of `coverage x (0.7 + 0.3 x urgency)`. Below 70 the recipe is
+   missing something, so it is amber; at or above 70 every core ingredient is in
+   the kitchen and it turns brand green. */
+
+.score-track {
+  height: 6px;
+  border-radius: var(--r-full);
+  background: var(--line-soft);
+  overflow: hidden;
+}
+
+.score-fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--r-full);
+  background: linear-gradient(90deg, var(--near-500), #fbbf24);
+  transition: width 0.45s var(--ease);
+}
+
+.score-fill.is-high {
+  background: linear-gradient(90deg, var(--brand-600), var(--brand-400));
+}
+
+/* ------------------------------------------------------------ urgency dot */
+/* Three states, same shape. The ring is what keeps a 7px dot visible against a
+   tinted card without making it a heavy blob. */
+
+.urgency-dot,
+.dot-slot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--r-full);
+}
+
+.urgency-dot.is-expired {
+  background: var(--bad-500);
+  box-shadow: 0 0 0 3px rgb(244 63 94 / 0.16);
+}
+
+.urgency-dot.is-near {
+  background: var(--near-500);
+  box-shadow: 0 0 0 3px rgb(245 158 11 / 0.18);
+}
+
+.urgency-dot.is-fresh {
+  background: var(--brand-400);
+}
+
+/* Keeps a missing ingredient's name aligned with the ones that have a dot. */
+.dot-slot {
+  background: none;
+}
+
+/* ----------------------------------------------------------- recipe cards */
+
+.recipe-card {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding: 15px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: var(--sh-sm);
+  cursor: pointer;
+  transition: box-shadow 0.18s var(--ease), transform 0.18s var(--ease),
+    border-color 0.18s var(--ease);
+}
+
+.recipe-card:hover {
+  border-color: var(--brand-200);
+  box-shadow: var(--sh-md);
+  transform: translateY(-2px);
+}
+
+/* The card is a button, so it needs a visible keyboard ring of its own. */
+.recipe-card:focus-visible {
+  outline: none;
+  border-color: var(--brand-500);
+  box-shadow: var(--sh-md), 0 0 0 3px rgb(16 185 129 / 0.22);
+}
+
+/* Same language as `.item.is-near`: this recipe would rescue something. */
+.recipe-card.is-urgent {
+  border-color: var(--near-200);
+  background: linear-gradient(180deg, var(--near-50), var(--card) 42%);
+}
+
+.recipe-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+}
+
+.recipe-icon-wrap {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r-sm);
+  background: var(--brand-50);
+  color: var(--brand-700);
+}
+
+.recipe-card.is-urgent .recipe-icon-wrap {
+  background: var(--near-100);
+  color: var(--near-800);
+}
+
+.recipe-title {
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.recipe-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  margin: 3px 0 0;
+  font-size: 0.79rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.recipe-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Right-aligned figure. `flex: none` so a long title cannot squeeze the number
+   onto two lines. */
+.recipe-score {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex: none;
+  line-height: 1;
+}
+
+.recipe-score-val {
+  font-family: var(--font-display);
+  font-size: 1.32rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--brand-700);
+  font-variant-numeric: tabular-nums;
+}
+
+.recipe-card.is-urgent .recipe-score-val {
+  color: var(--near-800);
+}
+
+.recipe-score-label {
+  margin-top: 3px;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ------------------------------------------------------- coverage summary */
+
+.recipe-coverage {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.recipe-cov-have,
+.recipe-cov-miss,
+.recipe-cov-urgent {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: var(--r-full);
+}
+
+.recipe-cov-have {
+  background: var(--brand-50);
+  color: var(--brand-800);
+}
+
+.recipe-cov-miss {
+  background: var(--line-soft);
+  color: var(--muted);
+}
+
+.recipe-cov-urgent {
+  background: var(--near-100);
+  color: var(--near-800);
+}
+
+/* --------------------------------------------------- matched ingredients */
+/* A preview, not the full list -- four names are enough to recognise the dish,
+   and the sheet has the rest. */
+
+.recipe-have-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 7px;
+  margin: 0;
+  padding-top: 11px;
+  border-top: 1px solid var(--line-soft);
+  list-style: none;
+  margin-top: auto;
+}
+
+.recipe-have-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-full);
+  background: var(--card);
+  font-size: 0.78rem;
+  color: var(--ink-2);
+}
+
+.recipe-have-name {
+  text-transform: capitalize;
+}
+
+.recipe-have-days {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--near-700);
+  white-space: nowrap;
+}
+
+.recipe-have-more {
+  align-self: center;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* ---------------------------------------------------------- detail sheet */
+
+.recipe-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.recipe-detail .recipe-meta {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+/* The score, restated large with its reason underneath. */
+.detail-score {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 15px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: linear-gradient(180deg, var(--brand-50), var(--card) 70%);
+}
+
+.detail-score-num {
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+  flex: none;
+  font-family: var(--font-display);
+  line-height: 1;
+}
+
+.detail-score-num b {
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--brand-700);
+  font-variant-numeric: tabular-nums;
+}
+
+.detail-score-num span {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.detail-score-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.detail-score-note {
+  margin: 8px 0 0;
+  font-size: 0.82rem;
+  color: var(--ink-2);
+}
+
+.detail-section-head {
+  margin-bottom: 9px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ----------------------------------------------------- ingredient rows */
+/* Three columns: urgency, the recipe's word for the ingredient, and the actual
+   item it was matched to. That third column is the audit trail -- it is how the
+   user sees that "paneer" was satisfied by their "Amul Paneer 200g". */
+
+.ingredient-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--line-soft);
+}
+
+/* A grid, not a flex row, because the two layouts differ by which line the
+   matched item sits on: under the ingredient name on a phone (indented past the
+   dot so the column still reads), out to the right once there is room. */
+.ingredient-row {
+  display: grid;
+  grid-template-columns: 7px minmax(0, 1fr);
+  align-items: center;
+  gap: 3px 9px;
+  padding: 10px 12px;
+  background: var(--card);
+  font-size: 0.88rem;
+}
+
+.ingredient-row.is-missing {
+  background: #fcfdfd;
+}
+
+.ingredient-name {
+  min-width: 0;
+  font-weight: 600;
+  text-transform: capitalize;
+  overflow-wrap: anywhere;
+}
+
+.ingredient-row.is-missing .ingredient-name {
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.ingredient-src {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  grid-column: 2;
+  min-width: 0;
+  font-size: 0.79rem;
+  color: var(--ink-2);
+}
+
+/* Truncation lives on the name itself, not on the row: `text-overflow` needs a
+   block box of its own, and the flex row beside it holds the days-left chip. */
+.ingredient-item {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ingredient-src.muted {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.ingredient-days {
+  flex: none;
+  padding: 2px 7px;
+  border-radius: var(--r-full);
+  background: var(--near-100);
+  font-size: 0.71rem;
+  font-weight: 700;
+  color: var(--near-800);
+  white-space: nowrap;
+}
+
+.detail-pantry {
+  margin: 9px 0 0;
+  font-size: 0.79rem;
+  color: var(--muted);
+}
+
+/* ------------------------------------------------------- method + action */
+
+.detail-instructions {
+  margin: 0;
+  padding: 13px 15px;
+  border-radius: var(--r-sm);
+  background: var(--bg);
+  font-size: 0.9rem;
+  line-height: 1.68;
+  color: var(--ink-2);
+}
+
+.detail-actions {
+  padding-top: 4px;
+}
+
+/* ============================================ component responsive ===== */
+
+@media (min-width: 560px) {
+  .stat-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .form-grid.cols-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Past this width the sheet has room to be a centred dialog. */
+  .overlay {
+    align-items: center;
+    padding: 20px;
+  }
+
+  .modal {
+    border-radius: var(--r-xl);
+    padding-bottom: 18px;
+  }
+
+  /* Room for the matched item to sit on the same line as the ingredient. */
+  .ingredient-row {
+    grid-template-columns: 7px minmax(0, 1fr) auto;
+  }
+
+  .ingredient-src {
+    grid-column: 3;
+    justify-self: end;
+    max-width: 48%;
+  }
+}
+
+@media (min-width: 700px) {
+  .item-grid {
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  }
+
+  .card {
+    padding: 22px;
+  }
+
+  .card-split {
+    margin-inline: -22px;
+  }
+
+  .hero {
+    padding: 28px;
+  }
+
+  .hero h1 {
+    font-size: 1.9rem;
+  }
+
+  .filters {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .filters .search-field {
+    flex: 1;
+    max-width: 300px;
+  }
+
+  .recipe-card {
+    padding: 17px;
+  }
+
+  .detail-score {
+    padding: 15px 18px;
+  }
+}
+
+@media (min-width: 1024px) {
+  /* No tab bar to clear on a laptop. */
+  .toast-wrap {
+    bottom: 22px;
+  }
+
+  .stat-grid {
+    gap: 14px;
+  }
+
+  .item-grid {
+    gap: 14px;
+  }
+
+  .stack {
+    gap: 20px;
+  }
+}

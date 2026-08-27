@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#04372c" />
+    <meta
+      name="description"
+      content="Smart Kitchen -- food inventory tracking, expiry alerts and recipe suggestions."
+    />
+
+    <!--
+      Two faces: Plus Jakarta Sans for headings and figures, Inter for everything
+      else. `preconnect` because the fonts sit on a second origin, so the DNS and
+      TLS handshake would otherwise happen only after the CSS has been parsed.
+      `display=swap` so text paints in the fallback immediately -- on a slow
+      college network the alternative is a blank screen.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>Smart Kitchen — Inventory &amp; Expiry Tracker</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

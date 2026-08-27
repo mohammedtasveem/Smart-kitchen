@@ -1,0 +1,49 @@
+{
+  "name": "smart-food-inventory-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Backend API for the Smart Food Inventory & Expiry Alert System",
+  "main": "server.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js",
+    "db:migrate": "node src/db/migrate.js",
+    "db:reset": "node src/db/migrate.js --reset",
+    "db:seed:recipes": "node src/db/seedRecipes.js",
+    "sweep": "node src/jobs/runSweep.js",
+    "dispatch": "node src/jobs/runDispatch.js",
+    "test:e2e": "npm run test:e2e:phase5 && npm run test:e2e:phase7 && npm run test:e2e:phase8 && npm run test:e2e:phase9",
+    "test:e2e:phase5": "node tests/phase5-e2e.mjs",
+    "test:e2e:phase7": "node tests/phase7-e2e.mjs",
+    "test:e2e:phase8": "node tests/phase8-e2e.mjs",
+    "test:e2e:phase9": "node tests/phase9-e2e.mjs",
+    "test:cleanup": "node tests/cleanup-test-users.mjs",
+    "demo:phase8": "node tests/demo-phase8-rows.mjs",
+    "demo:phase8:undo": "node tests/demo-phase8-rows.mjs --undo",
+    "demo:phase9": "node tests/demo-phase9-items.mjs",
+    "demo:phase9:undo": "node tests/demo-phase9-items.mjs --undo"
+  },
+  "keywords": [
+    "express",
+    "mysql",
+    "food-waste",
+    "expiry-tracker",
+    "iot"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.6.2",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.11.0",
+    "mysql2": "^3.23.4",
+    "node-cron": "^4.6.0"
+  }
+}
