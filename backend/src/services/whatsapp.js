@@ -237,6 +237,9 @@ export async function sendWhatsApp({ to, body }) {
   // fails (e.g. not yet approved), fall back to free-form text so the user
   // still gets something during the demo window.
   if (templateName) {
+    // Meta template parameters cannot contain newlines, tabs, or more than 4
+    // consecutive spaces (error 132018). Replace newlines with spaces.
+    const templateBody = body.replace(/[\n\t]+/g, ' ').replace(/\s{2,}/g, ' ').trim();
     console.log(`[whatsapp] Trying template '${templateName}' (lang: ${env.whatsapp.templateLang}) for +${number}`);
     try {
       const result = await apiPost(url, accessToken, {
@@ -250,7 +253,7 @@ export async function sendWhatsApp({ to, body }) {
           components: [
             {
               type: 'body',
-              parameters: [{ type: 'text', text: body }],
+              parameters: [{ type: 'text', text: templateBody }],
             },
           ],
         },
