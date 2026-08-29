@@ -237,8 +237,9 @@ export async function sendWhatsApp({ to, body }) {
   // fails (e.g. not yet approved), fall back to free-form text so the user
   // still gets something during the demo window.
   if (templateName) {
+    console.log(`[whatsapp] Trying template '${templateName}' (lang: ${env.whatsapp.templateLang}) for +${number}`);
     try {
-      return await apiPost(url, accessToken, {
+      const result = await apiPost(url, accessToken, {
         messaging_product: 'whatsapp',
         recipient_type: 'individual',
         to: number,
@@ -254,11 +255,14 @@ export async function sendWhatsApp({ to, body }) {
           ],
         },
       });
+      console.log(`[whatsapp] ✅ Template sent successfully (sid: ${result.sid})`);
+      return result;
     } catch (err) {
       if (err.permanent) {
         // Template might not exist or not be approved yet -- fall through to
         // free-form text as a best-effort fallback.
-        console.warn(`[whatsapp] Template failed (${err.message}), falling back to free-form text`);
+        console.error(`[whatsapp] ⚠️ TEMPLATE FAILED — code: ${err.code}, status: ${err.status}, message: ${err.message}`);
+        console.error(`[whatsapp] Falling back to free-form text for +${number}`);
       } else {
         throw err;
       }
