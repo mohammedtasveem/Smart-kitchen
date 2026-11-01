@@ -138,7 +138,51 @@ export const env = {
   },
 
   device: {
+    /**
+     * Shared secret the ESP32-CAM sends in `x-device-key`. The device has no
+     * user account and no token -- one physical kitchen owns it -- so a single
+     * long random string is the whole authentication story (Phase 10).
+     */
     apiKey: process.env.DEVICE_API_KEY ?? '',
+    /**
+     * Whose kitchen the camera photographs. The key proves "a device", not
+     * "which user", so this one id maps the camera to an account once in .env
+     * instead of trusting an id the device sends.
+     */
+    userId: num(process.env.DEVICE_USER_ID, 0) || null,
+    /**
+     * Where uploaded photos land on disk.
+     *
+     * Deliberately local: a college demo has one camera and a handful of
+     * images a day, and object storage would add an account, a bill and an
+     * expiry policy for no gain. Serving them from `/uploads` keeps the whole
+     * Phase 10 path dependency-free.
+     */
+    uploadDir: process.env.DEVICE_UPLOAD_DIR ?? 'uploads/detections',
+    /**
+     * Reject photos larger than this once decoded. The ESP32-CAM sends a VGA
+     * JPEG (~60-150 KB); anything near the cap is a misconfigured client, not
+     * a real capture.
+     */
+    maxImageBytes: num(process.env.DEVICE_MAX_IMAGE_BYTES, 2 * 1024 * 1024),
+  },
+
+  /**
+   * Food recognition from the camera image (Phase 10, methodology step 2).
+   *
+   * Google Gemini's free tier covers a demo's photo volume comfortably, and
+   * the key is optional: with no GEMINI_API_KEY the upload still works and
+   * just proposes nothing, so the review screen becomes a plain manual form
+   * over a photo. The feature degrades instead of disappearing.
+   */
+  vision: {
+    apiKey: process.env.GEMINI_API_KEY ?? '',
+    // "gemini-2.5-flash" is no longer provisionable for new Google accounts
+    // (the API answers 404 with a pointer at newer models), so the fallback
+    // is the rolling "flash-latest" alias: it tracks Google's current flash
+    // model and stayed reachable when the pinned name was rejected.
+    model: process.env.GEMINI_MODEL ?? 'gemini-flash-latest',
+    timeoutMs: num(process.env.GEMINI_TIMEOUT_MS, 20000),
   },
 };
 

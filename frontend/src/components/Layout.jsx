@@ -43,6 +43,11 @@ export default function Layout() {
 
   return (
     <div className="shell">
+      {/* Keyboard users skip the whole sidebar with a Tab. Visually hidden
+          until focused. */}
+      <a className="skip-link" href="#main-content">
+        Skip to main content
+      </a>
       {/* ------------------------------------------------- desktop sidebar */}
       <aside className="sidebar">
         <Link to="/" className="sidebar-brand">
@@ -113,7 +118,7 @@ export default function Layout() {
           </div>
         </header>
 
-        <main className="content-inner">
+        <main id="main-content" className="content-inner">
           <Outlet />
 
           <p className="foot-note">
@@ -122,6 +127,12 @@ export default function Layout() {
             <br />
             SECAB Institute of Engineering and Technology · B.E. Electronics and
             Communication Engineering
+          </p>
+
+          <p className="foot-legal">
+            <Link to="/privacy">Privacy Policy</Link>
+            <span aria-hidden="true">·</span>
+            <Link to="/terms">Terms of Service</Link>
           </p>
         </main>
       </div>

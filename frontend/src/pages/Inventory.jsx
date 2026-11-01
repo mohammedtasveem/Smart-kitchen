@@ -9,6 +9,8 @@ import {
   updateFoodItem,
 } from '../api/foodItems.js';
 import { EmptyState, ItemGridSkeleton, Spinner } from '../components/Feedback.jsx';
+import CameraCapture from '../components/CameraCapture.jsx';
+import CameraReview from '../components/CameraReview.jsx';
 import FoodItemCard from '../components/FoodItemCard.jsx';
 import FoodItemForm from '../components/FoodItemForm.jsx';
 import Icon from '../components/Icon.jsx';
@@ -42,6 +44,9 @@ export default function Inventory() {
   const [editing, setEditing] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [busyId, setBusyId] = useState(null);
+  // Bumped after a webcam photo is sent so the review queue re-fetches and
+  // its banner appears -- it renders nothing while empty.
+  const [scanKey, setScanKey] = useState(0);
 
   // Wait for a pause in typing instead of firing a request per keystroke.
   useEffect(() => {
@@ -141,15 +146,23 @@ export default function Inventory() {
               : 'Loading…'}
           </p>
         </div>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={() => setShowAdd((open) => !open)}
-          aria-expanded={showAdd}
-        >
-          <Icon name={showAdd ? 'close' : 'plus'} size={17} />
-          {showAdd ? 'Close form' : 'Add item'}
-        </button>
+        <div className="spread" style={{ gap: 8 }}>
+          <CameraCapture
+            onUploaded={() => {
+              setScanKey((n) => n + 1);
+              load(); // a confirmed photo becomes an item, so refresh counts too
+            }}
+          />
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => setShowAdd((open) => !open)}
+            aria-expanded={showAdd}
+          >
+            <Icon name={showAdd ? 'close' : 'plus'} size={17} />
+            {showAdd ? 'Close form' : 'Add item'}
+          </button>
+        </div>
       </div>
 
       {showAdd && (
@@ -168,6 +181,12 @@ export default function Inventory() {
           />
         </section>
       )}
+
+      {/* Phase 10: photos awaiting human confirmation, from either the
+          ESP32-CAM or this tab's webcam. Renders nothing when the queue is
+          empty, so a kitchen with no camera runs exactly as before. Reloads
+          the inventory because confirming a photo creates an item. */}
+      <CameraReview knownCategories={categories} onConfirmed={load} refreshKey={scanKey} />
 
       <section className="card">
         <div className="filters" style={{ marginBottom: 16 }}>

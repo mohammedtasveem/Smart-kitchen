@@ -7,6 +7,8 @@ import Dashboard from './pages/Dashboard.jsx';
 import Inventory from './pages/Inventory.jsx';
 import Login from './pages/Login.jsx';
 import NotFound from './pages/NotFound.jsx';
+import Privacy from './pages/Privacy.jsx';
+import Terms from './pages/Terms.jsx';
 import Profile from './pages/Profile.jsx';
 import Recipes from './pages/Recipes.jsx';
 import Signup from './pages/Signup.jsx';
@@ -35,6 +37,12 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
         </Route>
       </Route>
+
+      {/* Public documents: outside both route guards, so they read fine for a
+          logged-out visitor checking the service before signup and for a
+          logged-in user following the footer link. */}
+      <Route path="/privacy" element={<Privacy />} />
+      <Route path="/terms" element={<Terms />} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>

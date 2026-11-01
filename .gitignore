@@ -41,3 +41,6 @@ esp32-cam/build/
 coverage/
 .cache/
 *.local
+
+# Chat attachments (Freebuff screenshots, not part of the repo)
+.cloud-attachments/

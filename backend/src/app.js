@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { env } from './config/env.js';
 import routes from './routes/index.js';
@@ -24,6 +26,14 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api', routes);
+
+// ESP32-CAM photos (Phase 10), served from the same origin as the API so the
+// review screen can use a relative /uploads/... URL in every environment.
+// readFileSync is not involved; express.static streams from disk and sets
+// its own content type. The directory need not exist yet -- static simply
+// answers 404 until the first upload creates it.
+const backendRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+app.use('/uploads', express.static(path.join(backendRoot, 'uploads')));
 
 // Order matters: 404 first, then the error handler last.
 app.use(notFound);

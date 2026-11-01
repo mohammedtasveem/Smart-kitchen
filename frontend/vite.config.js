@@ -6,6 +6,14 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
+      // ESP32-CAM photos (Phase 10) are served by Express. Proxying them the
+      // same way keeps the browser on one origin in development, so the
+      // relative /uploads/... URL works in dev and on a deployed same-origin
+      // backend without the frontend ever knowing the difference.
+      '/uploads': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
       // Dev requests to /api are forwarded to the Express server. This keeps the
       // browser on a single origin, so CORS cannot break development -- the most
       // common "it worked yesterday" failure in a split frontend/backend setup.

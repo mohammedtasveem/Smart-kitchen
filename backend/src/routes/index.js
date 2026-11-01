@@ -5,6 +5,7 @@ import authRoutes from './auth.routes.js';
 import foodItemRoutes from './foodItem.routes.js';
 import notificationRoutes from './notification.routes.js';
 import recipeRoutes from './recipe.routes.js';
+import deviceRoutes from './device.routes.js';
 
 const router = Router();
 
@@ -13,8 +14,6 @@ router.use('/auth', authRoutes);
 router.use('/food-items', foodItemRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/recipes', recipeRoutes);
-
-// Upcoming phases mount here:
-//   router.use('/device', deviceRoutes);    // Phase 10
+router.use('/device', deviceRoutes); // Phase 10
 
 export default router;

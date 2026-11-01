@@ -134,6 +134,51 @@ CREATE TABLE IF NOT EXISTS notifications (
 
 
 -- ---------------------------------------------------------------------------
+--  device_detections  --  ESP32-CAM photos awaiting human review (Phase 10)
+--
+--  Methodology step 3 is "validation" -- the camera and the AI only *propose*
+--  an item; a person confirms it before it enters `food_items`. So a photo
+--  lands here first, and only the confirm endpoint (which goes through the
+--  same validateFoodItem rules as a typed entry) ever writes an inventory row.
+--  The AI's confidence and the text it read off the pack are kept so a wrong
+--  detection can be diagnosed instead of guessed at.
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS device_detections (
+  id            INT UNSIGNED    NOT NULL AUTO_INCREMENT,
+  -- The kitchen this photo belongs to. Device uploads name a user id; they
+  -- never carry a token, which is why the shared DEVICE_API_KEY exists instead.
+  user_id       INT UNSIGNED    NOT NULL,
+  -- Path under the static uploads dir, e.g. /uploads/detections/2026-11-05-a1b2.jpg
+  image_url     VARCHAR(500)    NOT NULL,
+  status        ENUM('pending', 'confirmed', 'discarded') NOT NULL DEFAULT 'pending',
+  -- AI proposal. Any of these may be NULL -- "no idea what this is" is a real
+  -- and expected result, not an error, and the user can still type the item in.
+  detected_name VARCHAR(150)            DEFAULT NULL,
+  category      VARCHAR(60)             DEFAULT NULL,
+  expiry_date   DATE                    DEFAULT NULL,
+  -- 0..1, from the model. Below ~0.5 the UI shows a "low confidence" hint so
+  -- the reviewer knows to check the expiry date especially carefully.
+  confidence    DECIMAL(4, 3)           DEFAULT NULL,
+  -- Whatever text was readable on the packaging, kept verbatim.
+  raw_ocr_text  VARCHAR(500)            DEFAULT NULL,
+  -- Which backend produced the proposal: 'gemini', or 'none' when no AI key is
+  -- configured and the row exists purely to hold the photo.
+  provider      VARCHAR(30)             DEFAULT NULL,
+  -- Set when confirmed: the inventory row this photo became.
+  food_item_id  INT UNSIGNED            DEFAULT NULL,
+  created_at    TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  confirmed_at  DATETIME               DEFAULT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_device_detections_user
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+  CONSTRAINT fk_device_detections_item
+    FOREIGN KEY (food_item_id) REFERENCES food_items (id) ON DELETE SET NULL,
+  -- The review screen's only query: "my photos still waiting", newest first.
+  KEY idx_device_detections_user_status (user_id, status, created_at)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+
+-- ---------------------------------------------------------------------------
 --  v_food_items_status  --  computed expiry classification (Phase 7)
 --
 --  The ONE place the "near expiry" threshold is defined. Change the 3 below

@@ -92,6 +92,11 @@ export default function Login() {
           </form>
         </div>
 
+        <p className="auth-legal">
+          By signing in you agree to our <Link to="/terms">Terms of Service</Link>{' '}
+          and <Link to="/privacy">Privacy Policy</Link>.
+        </p>
+
         <p className="auth-switch">
           New here? <Link to="/signup">Create an account</Link>
         </p>

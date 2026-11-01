@@ -187,10 +187,17 @@ Other deliberate choices:
 
 ```bash
 npm run dev       # dev server on :5173, hot reload
+npm run dev:https # same dev server over a self-signed HTTPS cert
 npm run build     # production bundle into dist/
 npm run preview   # serve the built bundle locally
 npm run lint      # oxlint
 ```
+
+`dev:https` exists because a phone or tablet on the same Wi-Fi is a
+non-localhost origin, which browsers treat as insecure -- use it when you need
+to test the camera capture or other secure-context behaviour from another
+device. The first visit shows a self-signed-certificate warning; that is
+expected for development. Production HTTPS comes from the hosting platform.
 
 ### How it talks to the API
 
@@ -607,14 +614,25 @@ collision, so `affectedRows` is exactly the number of alerts actually created.
 - [x] **Phase 7** -- Expiry classification + daily sweep + alert history
 - [x] **Phase 8** -- WhatsApp alerts (Meta Cloud API) — grouped daily message, retry, dry-run mode
 - [x] **Phase 9** -- Recipe recommendation (expiry-priority matching)
-- [ ] **Phase 10** -- ESP32-CAM image upload + backend AI/OCR detection
+- [x] **Phase 10** -- Image capture + backend AI/OCR detection (ESP32-CAM or browser webcam)
 - [x] **Phase 11** -- Security hardening (rate limiting + httpOnly cookie JWT)
+
+**Phase 10 completed:** Photo upload (shared-key `x-device-key` gate for the
+ESP32-CAM, login session for the browser's own webcam -- the shared key is
+deliberately never handed to JavaScript), Gemini free-tier recognition with
+graceful no-key fallback, a `device_detections` queue, and a human **review
+step** on the Inventory page -- a photo never becomes an inventory row until
+someone approves it through the same `validateFoodItem` rules a typed entry
+goes through. Both entrances converge on one `fileCapture`, so a photo cannot
+be told apart afterwards by where it came from. Sketch + wiring guide live in
+[esp32-cam/README.md](esp32-cam/README.md); without hardware, use the
+**Scan with camera** button on Inventory.
 
 **Phase 11 completed:** Rate limiting on auth endpoints (`express-rate-limit`),
 and JWT moved from `localStorage` to httpOnly cookie for XSS protection.
 
-The recipes page arrives with Phase 9. Until then the app ships only the screens
-the existing API can actually serve: Dashboard, Inventory, Alerts and Profile.
+The app ships Dashboard, Inventory (including the camera review queue), Alerts,
+Recipes and Profile.
 
 See [docs/requirements.md](docs/requirements.md) for the phase-by-phase
 requirements and how each maps onto a PPT objective.

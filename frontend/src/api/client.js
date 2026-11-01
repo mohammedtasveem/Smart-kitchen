@@ -69,7 +69,15 @@ export function setUnauthorizedHandler(fn) {
 // must not be mistaken for "session expired" and trigger a logout.
 const AUTH_ENTRY_PATHS = ['/auth/login', '/auth/signup'];
 
-async function request(method, path, body) {
+/**
+ * One request shape for the whole app.
+ *
+ * `raw` swaps the JSON encoding for a body passed through untouched -- the
+ * webcam's JPEG bytes, which must not be stringified. Auth, the error envelope
+ * and the 401-to-logout path stay identical either way, so a binary endpoint
+ * cannot quietly behave differently from every other call.
+ */
+async function request(method, path, body, { raw = false, contentType = 'application/json' } = {}) {
   const token = getToken();
 
   let res;
@@ -77,10 +85,10 @@ async function request(method, path, body) {
     res = await fetch(`${BASE}${path}`, {
       method,
       headers: {
-        ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}),
+        ...(body !== undefined ? { 'Content-Type': contentType } : {}),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
-      ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+      ...(body !== undefined ? { body: raw ? body : JSON.stringify(body) } : {}),
     });
   } catch {
     throw new ApiError(
@@ -129,4 +137,7 @@ export const api = {
   post: (path, body) => request('POST', path, body),
   patch: (path, body) => request('PATCH', path, body),
   del: (path) => request('DELETE', path),
+  /** POST a non-JSON body (binary upload) with the same auth and errors. */
+  postBinary: (path, body, contentType) =>
+    request('POST', path, body, { raw: true, contentType }),
 };

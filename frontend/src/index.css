@@ -9,34 +9,40 @@
      below -- sticky top bar + fixed bottom tab bar, the way a phone app works
      above -- a dark sidebar, because a top bar wastes vertical space on a laptop
 
-   Colour carries meaning here, so it is not decorative: emerald = fresh/brand,
-   amber = near expiry, rose = expired. Those three are the only accent families
-   in the file, which is what keeps the app from looking like a template.
+   Colour carries meaning here, so it is not decorative: blush = fresh/brand,
+   amber = near expiry, rose-red = expired. Those three are the only accent
+   families in the file, which is what keeps the app from looking like a
+   template.
    ========================================================================== */
 
 :root {
   /* ------------------------------------------------------------- typography */
-  /* Two faces: Jakarta for headings and figures (its numerals are wide and
-     confident, which suits a dashboard), Inter for everything that is read
+  /* Two faces: Fraunces for headings and figures -- an optical serif whose
+     numerals have the weight of printed packaging, which is what gives the
+     dashboard its editorial feel -- and Manrope for everything that is read
      rather than glanced at. Both are loaded in index.html. */
-  --font-display: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
-  --font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-ui: 'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   /* ------------------------------------------------------------------ brand */
-  --brand-50: #ecfdf5;
-  --brand-100: #d1fae5;
-  --brand-200: #a7f3d0;
-  --brand-400: #34d399;
-  --brand-500: #10b981;
-  --brand-600: #059669;
-  --brand-700: #047857;
-  --brand-800: #065f46;
-  --brand-900: #064e3b;
+  /* Blush-to-rose ramp in the register of a premium beauty brand: warm pink
+     for surfaces and highlights, a deep rosewood for text-links and buttons
+     against it. Never baby-pink -- depth is what keeps it expensive. */
+  --brand-50: #fdf3f6;
+  --brand-100: #f9e3ea;
+  --brand-200: #f2cad7;
+  --brand-400: #e07397;
+  --brand-500: #d15f86;
+  --brand-600: #b34c6f;
+  --brand-700: #933c58;
+  --brand-800: #76304a;
+  --brand-900: #562236;
 
   /* The sidebar gradient. Matches <meta name="theme-color"> so the phone's
      status bar does not sit on a different green to the app. */
-  --shell-dark-1: #04372c;
-  --shell-dark-2: #032a22;
+  /* The sidebar: deep plum-wine, the dark counterpart of the blush ramp. */
+  --shell-dark-1: #43202e;
+  --shell-dark-2: #2a1320;
 
   /* --------------------------------------------------- status: near expiry */
   --near-50: #fffbeb;
@@ -57,30 +63,31 @@
   /* ---------------------------------------------------------------- neutral */
   /* Greened-off greys rather than pure grey, so the neutrals belong to the same
      family as the brand instead of looking bolted on. */
-  --ink: #0f1c18;
-  --ink-2: #3d4a45;
-  --muted: #6b7a74;
-  --line: #e3e9e6;
-  --line-soft: #eef2f0;
-  --bg: #f4f7f5;
-  --card: #ffffff;
+  /* Warm blush-paper neutrals: ivory-rose background, plum-tinted ink. */
+  --ink: #2b2126;
+  --ink-2: #4d4348;
+  --muted: #83757c;
+  --line: #eae2e5;
+  --line-soft: #f4eef0;
+  --bg: #faf6f5;
+  --card: #fffdfd;
 
   /* ----------------------------------------------------------------- radius */
-  --r-xs: 8px;
-  --r-sm: 12px;
-  --r-md: 16px;
-  --r-lg: 20px;
-  --r-xl: 24px;
+  --r-xs: 10px;
+  --r-sm: 14px;
+  --r-md: 18px;
+  --r-lg: 24px;
+  --r-xl: 28px;
   --r-full: 999px;
 
   /* ---------------------------------------------------------------- shadows */
   /* Two layers each: a tight one for the contact edge, a wide soft one for the
      lift. One-layer shadows are what make a card look pasted on. */
-  --sh-xs: 0 1px 2px rgb(15 28 24 / 0.05);
-  --sh-sm: 0 1px 3px rgb(15 28 24 / 0.06), 0 1px 2px rgb(15 28 24 / 0.04);
-  --sh-md: 0 4px 12px -2px rgb(15 28 24 / 0.08), 0 2px 6px -2px rgb(15 28 24 / 0.05);
-  --sh-lg: 0 18px 40px -12px rgb(15 28 24 / 0.18), 0 4px 12px -4px rgb(15 28 24 / 0.08);
-  --sh-brand: 0 6px 18px -6px rgb(5 150 105 / 0.45);
+  --sh-xs: 0 1px 2px rgb(43 33 38 / 0.04);
+  --sh-sm: 0 1px 3px rgb(43 33 38 / 0.05), 0 1px 2px rgb(43 33 38 / 0.03);
+  --sh-md: 0 6px 16px -4px rgb(43 33 38 / 0.09), 0 2px 6px -2px rgb(43 33 38 / 0.04);
+  --sh-lg: 0 22px 48px -14px rgb(43 33 38 / 0.20), 0 4px 14px -6px rgb(43 33 38 / 0.07);
+  --sh-brand: 0 6px 18px -6px rgb(147 60 88 / 0.45);
 
   /* ----------------------------------------------------------------- layout */
   --sidebar-w: 264px;
@@ -131,7 +138,7 @@ h4 {
 
 h1 {
   font-size: 1.55rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.03em;
 }
 
@@ -253,7 +260,7 @@ svg {
   flex-direction: column;
   gap: 8px;
   padding: 18px 14px;
-  background: linear-gradient(168deg, var(--shell-dark-1) 0%, #053026 52%, var(--shell-dark-2) 100%);
+  background: linear-gradient(168deg, var(--shell-dark-1) 0%, #3a1a27 52%, var(--shell-dark-2) 100%);
   color: #cfe3dc;
 }
 
@@ -264,7 +271,7 @@ svg {
   padding: 6px 8px 18px;
   color: #fff;
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 700;
   font-size: 1.05rem;
   letter-spacing: -0.02em;
 }
@@ -394,7 +401,7 @@ svg {
   align-items: center;
   gap: 9px;
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 700;
   font-size: 1rem;
   letter-spacing: -0.02em;
   color: var(--ink);
@@ -614,7 +621,7 @@ svg {
   overflow: hidden;
   border-radius: var(--r-lg);
   padding: 22px;
-  background: linear-gradient(150deg, var(--shell-dark-1) 0%, #064c3b 55%, var(--brand-700) 100%);
+  background: linear-gradient(150deg, var(--shell-dark-1) 0%, #5c2b3f 55%, var(--brand-700) 100%);
   color: #eaf6f1;
   box-shadow: var(--sh-md);
 }
@@ -872,7 +879,7 @@ svg {
   margin-top: 7px;
   font-family: var(--font-display);
   font-size: 1.95rem;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.05;
   letter-spacing: -0.035em;
   /* Equal-width digits, so a count changing from 9 to 10 does not shift the
@@ -949,7 +956,7 @@ svg {
 .donut-total {
   font-family: var(--font-display);
   font-size: 1.7rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.035em;
   font-variant-numeric: tabular-nums;
 }
@@ -1737,8 +1744,8 @@ svg {
   /* Two very soft brand glows on the page background -- enough to stop the login
      screen being a white rectangle, subtle enough not to fight the form. */
   background:
-    radial-gradient(circle at 12% 8%, rgb(16 185 129 / 0.1), transparent 42%),
-    radial-gradient(circle at 88% 92%, rgb(4 55 44 / 0.09), transparent 46%),
+    radial-gradient(circle at 12% 8%, rgb(209 95 134 / 0.1), transparent 42%),
+    radial-gradient(circle at 88% 92%, rgb(67 32 46 / 0.09), transparent 46%),
     var(--bg);
 }
 
@@ -1754,7 +1761,7 @@ svg {
   justify-content: center;
   gap: 10px;
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 700;
   font-size: 1.15rem;
   letter-spacing: -0.02em;
 }
@@ -1935,7 +1942,7 @@ svg {
 .recipe-card:focus-visible {
   outline: none;
   border-color: var(--brand-500);
-  box-shadow: var(--sh-md), 0 0 0 3px rgb(16 185 129 / 0.22);
+  box-shadow: var(--sh-md), 0 0 0 3px rgb(209 95 134 / 0.22);
 }
 
 /* Same language as `.item.is-near`: this recipe would rescue something. */
@@ -2000,7 +2007,7 @@ svg {
 .recipe-score-val {
   font-family: var(--font-display);
   font-size: 1.32rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.03em;
   color: var(--brand-700);
   font-variant-numeric: tabular-nums;
@@ -2135,7 +2142,7 @@ svg {
 
 .detail-score-num b {
   font-size: 1.85rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.04em;
   color: var(--brand-700);
   font-variant-numeric: tabular-nums;
@@ -2360,5 +2367,239 @@ svg {
 
   .stack {
     gap: 20px;
+  }
+}
+
+/* ==================================================== public documents ==== */
+/* Privacy Policy and Terms live outside the app shell, so they carry their own
+   furniture: a small header, one comfortable reading column and a footer. The
+   styling borrows the auth-shell's soft glow so the pages read as part of the
+   same product without duplicating the whole sidebar. */
+
+.skip-link {
+  position: absolute;
+  top: -48px;
+  left: 16px;
+  z-index: 1100;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--card);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  box-shadow: var(--sh-md);
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: 16px;
+}
+
+.foot-legal {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.foot-legal a {
+  color: var(--brand-700);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.foot-legal a:hover {
+  color: var(--brand-500);
+}
+
+.auth-legal {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.auth-legal a {
+  color: var(--brand-700);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* --------------------------------------------------------------- doc shell */
+
+.doc-shell {
+  min-height: 100dvh;
+  padding: 0 16px 40px;
+  background:
+    radial-gradient(circle at 12% 8%, rgb(209 95 134 / 0.07), transparent 42%),
+    radial-gradient(circle at 88% 92%, rgb(67 32 46 / 0.06), transparent 46%),
+    var(--bg);
+}
+
+.doc-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 18px 0 26px;
+}
+
+.doc-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.doc-brand img {
+  width: 34px;
+  height: 34px;
+}
+
+.doc-nav {
+  display: flex;
+  gap: 18px;
+  font-size: 0.88rem;
+}
+
+.doc-nav a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.doc-nav a:hover,
+.doc-nav a:focus-visible {
+  color: var(--brand-700);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.doc-main {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.doc {
+  padding: 30px 26px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--card);
+  box-shadow: var(--sh-md);
+}
+
+.doc h1 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.doc-tagline {
+  margin-top: 10px;
+  font-size: 0.98rem;
+  color: var(--muted);
+}
+
+.doc-updated {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--brand-700);
+}
+
+.doc-body {
+  margin-top: 26px;
+}
+
+.doc-section {
+  padding-top: 22px;
+  margin-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.doc-section:first-child {
+  padding-top: 0;
+  margin-top: 0;
+  border-top: 0;
+}
+
+.doc-section h2 {
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  letter-spacing: -0.01em;
+}
+
+.doc-section p {
+  margin-top: 12px;
+  font-size: 0.94rem;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+
+/* Definition lists: label first, then the detail, so a screen-reader user
+   hears the structure instead of a run-on paragraph. */
+.doc-list {
+  margin-top: 14px;
+  display: grid;
+  gap: 14px;
+}
+
+.doc-list dt {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+
+.doc-list dd {
+  margin-top: 3px;
+  font-size: 0.94rem;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+
+.doc-foot {
+  margin-top: 30px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.doc-project {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.doc-project .icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--brand-700);
+}
+
+.doc-actions {
+  margin-top: 18px;
+}
+
+@media (max-width: 640px) {
+  .doc {
+    padding: 22px 18px;
+  }
+
+  .doc h1 {
+    font-size: 1.35rem;
   }
 }

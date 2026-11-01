@@ -15,6 +15,14 @@ export const pool = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0,
   charset: 'utf8mb4_unicode_ci',
+  // TiDB Serverless drops idle TCP connections without warning. Without a
+  // keepalive the FIRST query after a quiet spell dies with `read ECONNRESET`
+  // and reaches the client as a 500 -- which is exactly how a camera scan
+  // failed while the code itself was fine. The pool would then open a fresh
+  // connection, so only that one request was lost; a keepalive stops it
+  // happening at all instead of making every caller retry.
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 10_000,
   // TiDB Cloud requires SSL/TLS connections
   ssl: env.db.host?.includes('tidbcloud.com') ? { rejectUnauthorized: true } : undefined,
   // Keep DATE columns as plain 'YYYY-MM-DD' strings. Without this, mysql2

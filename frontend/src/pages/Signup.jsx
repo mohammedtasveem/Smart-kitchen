@@ -118,6 +118,12 @@ export default function Signup() {
           </form>
         </div>
 
+        <p className="auth-legal">
+          By creating an account you agree to our <Link to="/terms">Terms of
+          Service</Link> and <Link to="/privacy">Privacy Policy</Link>. We collect
+          only your name, email and — if you want WhatsApp alerts — a phone number.
+        </p>
+
         <p className="auth-switch">
           Already have an account? <Link to="/login">Sign in</Link>
         </p>
