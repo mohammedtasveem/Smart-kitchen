@@ -41,13 +41,27 @@ Arduino IDE → **Tools → Board → Boards Manager**, search `esp32`, install
 
 ## 2. Open the sketch
 
-File → Open → `esp32-cam/smart_kitchen_cam.ino`, then fill the CONFIG block:
+File → Open → `esp32-cam/smart_kitchen_cam.ino`. Credentials are **not** in the
+sketch — they live in a local `secrets.h` that git never sees.
+
+**a. Copy the template once** (from the project root):
+
+```bash
+cp esp32-cam/secrets.example.h esp32-cam/secrets.h
+```
+
+**b. Fill in `esp32-cam/secrets.h`:**
 
 ```cpp
-const char* WIFI_SSID     = "YOUR_WIFI_NAME";
-const char* WIFI_PASS     = "YOUR_WIFI_PASSWORD";
-const char* UPLOAD_URL    = "http://<YOUR_PC_LAN_IP>:5000/api/device/upload";
-const char* DEVICE_KEY    = "<value of DEVICE_API_KEY in backend/.env>";
+static const char* WIFI_SSID  = "your-wifi-name";
+static const char* WIFI_PASS  = "your-wifi-password";
+static const char* DEVICE_KEY = "<value of DEVICE_API_KEY in backend/.env>";
+```
+
+**c. Set the backend URL** in the sketch's CONFIG block:
+
+```cpp
+const char* UPLOAD_URL = "http://<YOUR_PC_LAN_IP>:5000/api/device/upload";
 ```
 
 - **UPLOAD_URL uses your PC's LAN IP, not `localhost`.** `localhost` on the
@@ -59,6 +73,10 @@ const char* DEVICE_KEY    = "<value of DEVICE_API_KEY in backend/.env>";
   node -e "console.log(require('crypto').randomBytes(24).toString('hex'))"
   ```
 - Both machines must be on the **same Wi-Fi network**.
+- **Never commit `secrets.h`.** It is in `.gitignore`; `secrets.example.h`
+  (placeholders only) is the file that belongs in the repo. If `git status`
+  ever lists `secrets.h`, run `git rm --cached esp32-cam/secrets.h` before
+  committing anything.
 
 ## 3. Tools → settings
 
@@ -123,6 +141,7 @@ camera and the AI only ever *propose*.
 | Piece | File |
 |---|---|
 | The sketch | [`smart_kitchen_cam.ino`](smart_kitchen_cam.ino) |
+| Credential template | [`secrets.example.h`](secrets.example.h) (copy to git-ignored `secrets.h`) |
 | Upload endpoint | `backend/src/routes/device.routes.js` |
 | Shared-key check | `backend/src/middleware/deviceAuth.js` |
 | AI recognition | `backend/src/services/foodRecognition.js` |

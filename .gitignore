@@ -37,6 +37,11 @@ desktop.ini
 esp32-cam/.pio/
 esp32-cam/build/
 
+# Local ESP32-CAM credentials -- Wi-Fi password + shared device key.
+# The committed, placeholder-only template is esp32-cam/secrets.example.h.
+# (No leading path: covers secrets.h at any level, never secrets.example.h.)
+secrets.h
+
 # Misc
 coverage/
 .cache/

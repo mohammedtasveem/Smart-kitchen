@@ -29,21 +29,24 @@
  *   Partition Scheme: Huge APP (3MB No OTA)
  *   Upload Speed:     115200  (raise later if stable)
  *
- * Configure the four constants in the CONFIG block, upload, then remove the
- * GPIO0->GND jumper and press the reset button on the camera board.
+ * Wi-Fi credentials and the device key are NOT in this file: they live in
+ * secrets.h, which is git-ignored so they can never reach GitHub. Copy
+ * secrets.example.h to secrets.h once, fill it in, then upload this sketch and
+ * remove the GPIO0->GND jumper before pressing the camera board's reset.
  *
  * Serial monitor: 115200 baud.
  */
 
 #include "esp_camera.h"
+#include "secrets.h"  // Wi-Fi SSID/password + DEVICE_KEY -- local only, git-ignored
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
 #include <HTTPClient.h>
 
 // ============================= CONFIG =======================================
-// Fill these three in before flashing.
-const char* WIFI_SSID = "YOUR_WIFI_NAME";
-const char* WIFI_PASS = "YOUR_WIFI_PASSWORD";
+// Wi-Fi SSID/password and DEVICE_KEY are in secrets.h (git-ignored), so this
+// tracked file never holds a credential. Copy secrets.example.h to secrets.h
+// and fill that in. Only the backend URL and the interval live here.
 
 // Backend URL — the /api/device/upload endpoint, NOT the web page.
 // Local dev:    "http://192.168.x.x:5000/api/device/upload"  (your PC's LAN IP;
@@ -54,9 +57,6 @@ const char* WIFI_PASS = "YOUR_WIFI_PASSWORD";
 // when the URL starts with "https", so a Render deployment works with no code
 // change -- just paste the URL.
 const char* UPLOAD_URL = "http://192.168.1.100:5000/api/device/upload";
-
-// Must match DEVICE_API_KEY in backend/.env exactly.
-const char* DEVICE_KEY = "PUT_YOUR_DEVICE_API_KEY_HERE";
 
 // Milliseconds between captures. 60000 = one photo a minute. The daily sweep
 // only cares about expiry dates, so a photo every few minutes is plenty and
