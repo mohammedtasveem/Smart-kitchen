@@ -110,6 +110,13 @@ camera and the AI only ever *propose*.
   because the camera never assumed success.
 - Photos are stored under `backend/uploads/` (git-ignored) and served at
   `/uploads/detections/…`.
+- **HTTPS is automatic.** If `UPLOAD_URL` starts with `https://` the sketch
+  switches to `WiFiClientSecure`, so a hosted backend (Render) works with no
+  code change — paste the URL and flash. Plain `http://` (LAN dev server) is
+  unchanged.
+- **First upload after an idle period is slow.** A free Render service sleeps
+  after ~15 minutes and can take up to a minute to wake; the sketch waits 30 s.
+  If it still times out, watch the next cycle — the service is awake by then.
 
 ## Where each piece lives
 

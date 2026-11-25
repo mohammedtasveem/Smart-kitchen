@@ -13,6 +13,26 @@
 // stays on one origin. A deployed build can point elsewhere via VITE_API_BASE.
 const BASE = import.meta.env.VITE_API_BASE || '/api';
 
+// When BASE is a full URL (deployed build: https://backend.onrender.com/api)
+// this is its origin, e.g. https://backend.onrender.com. Empty in dev, where
+// BASE is the relative /api and the Vite proxy serves /uploads too.
+const API_ORIGIN = /^https?:\/\//i.test(BASE) ? new URL(BASE).origin : '';
+
+/**
+ * Point a server-relative asset path at the backend.
+ *
+ * The API returns photos as `/uploads/detections/<file>.jpg` -- correct only
+ * when the frontend and backend share an origin, which they do in dev but not
+ * on Vercel (frontend) + Render (backend): the browser would ask Vercel for the
+ * file and get a 404. Absolute URLs (a recipe from the web) and data: URIs are
+ * returned untouched, so this is safe on any image field.
+ */
+export function assetUrl(path) {
+  if (!path || typeof path !== 'string') return path;
+  if (/^(https?:|data:|blob:)/i.test(path)) return path;
+  return `${API_ORIGIN}${path.startsWith('/') ? '' : '/'}${path}`;
+}
+
 const TOKEN_KEY = 'sfi_token';
 
 export function getToken() {

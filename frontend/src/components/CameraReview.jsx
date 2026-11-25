@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { assetUrl } from '../api/client.js';
 import { confirmDetection, discardDetection, listDetections } from '../api/detections.js';
 import FoodItemForm from './FoodItemForm.jsx';
 import Icon from './Icon.jsx';
@@ -98,7 +99,7 @@ export default function CameraReview({ knownCategories = [], onConfirmed, refres
           return (
             <div key={d.id} className="spread" style={{ gap: 16, alignItems: 'flex-start' }}>
               <img
-                src={d.imageUrl}
+                src={assetUrl(d.imageUrl)}
                 alt="Food photo captured by the camera"
                 style={{
                   width: 72,
@@ -162,7 +163,7 @@ export default function CameraReview({ knownCategories = [], onConfirmed, refres
         >
           <div className="stack">
             <img
-              src={reviewing.imageUrl}
+              src={assetUrl(reviewing.imageUrl)}
               alt="The photo being reviewed"
               style={{
                 width: '100%',

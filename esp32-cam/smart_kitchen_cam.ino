@@ -37,6 +37,7 @@
 
 #include "esp_camera.h"
 #include <WiFi.h>
+#include <WiFiClientSecure.h>
 #include <HTTPClient.h>
 
 // ============================= CONFIG =======================================
@@ -48,6 +49,10 @@ const char* WIFI_PASS = "YOUR_WIFI_PASSWORD";
 // Local dev:    "http://192.168.x.x:5000/api/device/upload"  (your PC's LAN IP;
 //               "localhost" would mean the camera itself, which has no server)
 // Deployed:     "https://your-backend-host/api/device/upload"
+//
+// https:// is handled automatically: the sketch switches to WiFiClientSecure
+// when the URL starts with "https", so a Render deployment works with no code
+// change -- just paste the URL.
 const char* UPLOAD_URL = "http://192.168.1.100:5000/api/device/upload";
 
 // Must match DEVICE_API_KEY in backend/.env exactly.
@@ -201,13 +206,31 @@ camera_fb_t* capture() {
  * overload, and one less parser on a microcontroller is one less thing to
  * debug with no stack traces.
  *
+ * TLS: a hosted backend (Render, Fly, Railway...) only answers on https, and a
+ * plain WiFiClient cannot speak TLS -- the handshake fails and every upload
+ * errors out. So the client is chosen from the URL scheme: https -> 
+ * WiFiClientSecure, http (a LAN dev server) -> plain WiFiClient.
+ *
+ * setInsecure() skips certificate validation. Validating properly means
+ * shipping a CA bundle (~40 KB of flash) plus the TLS handshake's heap, and
+ * the photo is a JPEG of a fridge, not a password. The device key is what
+ * actually authorises the call, and the server still rejects a wrong one.
+ *
  * Returns the HTTP status, or -1 on a connection failure.
  */
 int uploadFrame(const uint8_t* data, size_t len) {
-  WiFiClient client;
+  WiFiClient plainClient;
+  WiFiClientSecure secureClient;
+  WiFiClient* client = &plainClient;
+
+  if (String(UPLOAD_URL).startsWith("https://")) {
+    secureClient.setInsecure();
+    client = &secureClient;
+  }
+
   HTTPClient http;
 
-  if (!http.begin(client, UPLOAD_URL)) {
+  if (!http.begin(*client, UPLOAD_URL)) {
     Serial.println("[cam] http.begin failed (bad URL?)");
     return -1;
   }
@@ -215,7 +238,11 @@ int uploadFrame(const uint8_t* data, size_t len) {
   http.addHeader("Content-Type", "image/jpeg");
   http.addHeader("x-device-key", DEVICE_KEY);
   // The camera sends exactly what the server stores: bytes in, JSON out.
-  http.setTimeout(15000);
+  // 30s, not 15s: a free-tier Render service sleeps after ~15 minutes idle and
+  // takes up to a minute to wake. 15s would time out on the first photo after
+  // a sleep, so the very first upload of the day would always look like a
+  // failure even though the server was fine.
+  http.setTimeout(30000);
 
   int code = http.POST((uint8_t*)data, len);
 
